@@ -1,0 +1,7 @@
+id,role,type,description,size/ratio,style line ref,source
+forest,environment,procedural geometry,Instanced trees ferns rocks ruins stream and mountains,world,1,procedural
+knight,player,procedural geometry,Articulated plate knight with thorn crown longsword and leaf shield,2 units,1,procedural
+enemies,combat,procedural geometry,Rootbound sentinels and crowned keeper,2-4 units,1,procedural
+shrines,objective,procedural geometry,Three amber light vessels and crown altar,world,1,procedural
+atmosphere,lighting,procedural shader,Mist light shafts fireflies and water,world,1,procedural
+audio,feedback,Web Audio,Synthesized wind drone sword impact and shrine chimes,n/a,1,procedural
