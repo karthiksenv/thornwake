@@ -1,0 +1,5 @@
+import { chromium } from 'playwright';
+import fs from 'node:fs';
+const b=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHANNEL?{channel:process.env.PLAYWRIGHT_CHANNEL}:{})});const p=await b.newPage({viewport:{width:1280,height:720}});
+await p.goto('http://localhost:5173/cinematic/Thornwake_Trailer.mp4');
+const info=await p.evaluate(async()=>{const v=document.querySelector('video');if(!v)throw new Error('No video element');v.pause();v.style.cssText='width:100vw;height:100vh;object-fit:contain';document.body.style.cssText='margin:0;background:black';if(v.readyState<1)await new Promise(r=>v.addEventListener('loadedmetadata',r,{once:true}));v.currentTime=10;await new Promise(r=>v.addEventListener('seeked',r,{once:true}));return {duration:v.duration,width:v.videoWidth,height:v.videoHeight,audioTracks:v.webkitAudioDecodedByteCount};});await p.screenshot({path:'output/trailer-preview.png'});fs.writeFileSync('output/trailer-report.json',JSON.stringify(info,null,2));console.log(info);await b.close();

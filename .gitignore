@@ -1,7 +1,19 @@
 node_modules/
 dist/
-*.zip
+output/
+*.log
+
+tools/blender/
+tools/blender-portable.zip
+cinematic/renders/
+cinematic/scene.json
+*.blend1
+
+# Local credentials and generated publishing artifacts
 .env
 .env.*
 !.env.example
-*.log
+.aws/
+Thornwake-playable.zip
+cinematic/*.blend
+tools/blender-download-index.html

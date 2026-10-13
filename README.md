@@ -1,49 +1,89 @@
-# Thornwake: The Sunken Weald
+# THORNWAKE — The Sunken Weald
 
-A complete small solo action RPG built with Three.js and vanilla JavaScript. Explore a misty procedural forest, kindle three guarded shrines, and defeat the Crownless Keeper. A run takes roughly 5–10 minutes.
+A complete, small desktop browser chapter built with TypeScript, Three.js, and Vite. All world geometry, character rigs, animation, atmosphere, water, and sound are procedural. The interface uses a single generated icon atlas. No models, remote fonts, CDN scripts, or downloaded texture packs are needed at runtime.
 
-## Run
+![Thornwake gameplay](docs/screenshots/gameplay.png)
 
-Requires Node.js 20.19+ or 22.12+.
+[Watch the 1080p trailer](cinematic/Thornwake_Trailer.mp4) | [Inspect the inventory](docs/screenshots/inventory.png)
 
-    npm install
-    npm run dev
+## Play
 
-Open the local URL printed by Vite. To package: `npm run build`. Serve the `dist` folder with any static HTTP server, or use `npm run preview`. The production build has no network dependency, fonts, textures, models, or audio downloads. Relative paths support subdirectory hosting. Open over HTTP, not by double-clicking HTML.
+Requires Node.js 22.12+ (or a current LTS release), npm, and a WebGL 2 browser. No environment variables or API keys are required to play.
 
-## Controls
+```sh
+npm install
+npm run dev
+```
 
-- WASD or arrows: camera-relative movement
-- J or left click: sword attack; softly targets a nearby enemy
-- K or right mouse: hold frontal guard
-- Space: dodge with a short invulnerability window
-- Q: drink a healing elixir (three charges)
-- E: kindle a nearby shrine after clearing its guardians
-- Shift + left drag or middle drag: orbit camera; wheel: zoom
-- Escape: pause/resume
-- Touch devices: directional and action buttons
-- Standard gamepad: left stick move, right stick orbit, X strike, LT guard, A dodge, B heal, Y commune, Start pause
+Open http://localhost:5173 and choose **Enter the weald**. WebGL 2 is required. The game targets desktop keyboard and mouse.
 
-Guard and attacks use stamina. Read the expanding ground rings and raised blades; evade or guard the strike and counter during recovery. Every three defeated sentinels increases blade damage and restores some health. Each shrine fully replenishes health, stamina, and elixirs. All three unlock the northern boss. Defeat or victory offers a fresh run. No persistent save.
+| Control | Action |
+|---|---|
+| WASD / arrows | Screen-relative movement |
+| Mouse | Face the pointer |
+| Left mouse / J | Strike; three consecutive strikes form a combo |
+| Right mouse | Walk toward a ground point |
+| Space | Dodge roll; costs endurance, grants brief invulnerability |
+| Shift / K | Hold directional shield guard |
+| Q | Sunfall area spell; costs 25 essence |
+| R | Drink a cinder flask |
+| E | Rest at the campfire / kindle the final altar |
+| I / Tab | Inventory, inspect, equip and unequip |
+| Escape | Pause or close a panel |
 
-## Implementation
+The HUD buttons also trigger actions; hold the guard icon to block. The music note toggles synthesized audio and the diamond toggles shadow quality. The game pauses when its window loses focus.
 
-Seeded procedural geometry; instanced trees, canopy, rocks, grass, ferns and paths; articulated plate-armored knight with optional thorn antlers and a leaf-emblem shield; synthesized audio; additive light shafts approximating volumetric rays; a subtle lighting cycle and translucent stream. Fixed 60 Hz simulation, capped rendering pixel ratio, low-graphics option, pause on focus loss, minimap and quest feedback.
+## Chapter route
 
-The core build is approximately 550 KB uncompressed / 146 KB gzip, including Three.js. `node_modules` contains build tooling and is not shipped. The forest is deliberately stylized. Desktop is the primary target; touch/gamepad mappings are included but physical-device performance is not certified.
+Rest at **Pilgrim’s Rest**, then follow the stone road north. Break three hollow oaths, inspect the recovered falchion, and return to the fire if you want to spend earned essence on a level. The **Wealdkeeper** awakens after all three wardens fall. Dodge the marked attacks, strike during recovery, and kindle the altar after defeating the keeper. Both defeat and victory offer a fresh restart.
 
-## Verification
+Six inventory items, four equipment slots, attribute bonuses, three flasks, and rest-point leveling are implemented. Session progress is held in memory and resets on reload. This is a self-contained first chapter, not an open-world campaign.
 
-`npm test` exercises stamina constraints, directional damage, dodge immunity, sword reach, movement, sentinel combat, all three shrine activations, boss victory, defeat and reset. The integration harness uses the actual scene and simulation with a mocked renderer, and restores health/stamina during encounters to isolate progression from player skill. Visual checks use the live browser. Add `?dev=1` for draw counts and frame-rate diagnostics.
+## Build and verify
 
-## Repository structure
+```sh
+npm test
+npm run build
+npm run preview
+```
 
-- `src/main.js`: procedural world, character animation, input, audio and game loop
-- `src/rules.js`: combat rules and player configuration
-- `src/style.css` and `index.html`: menus, HUD and responsive controls
-- `tests/`: combat and full-loop simulation checks
-- `design/`: procedural asset manifest and visual direction
+`dist/` is the entire deployable game. Serve it over HTTP; opening an ES-module build directly as a local file is unsupported. The build uses relative paths and can be hosted under a subdirectory. The Blender runtime, source scene, and trailer are separate production artifacts and are not copied to `dist/`.
+
+The simulation runs at a fixed 60 Hz. Static geometry is merged by material; rigid armor plates are merged within animated limbs. The forest shadow map is cached. An adaptive render scale targets 60 fps, preserving full-resolution HTML UI; actual performance depends on hardware. The final browser check measured 60 fps on Intel UHD graphics with adaptive resolution (108 draw calls in the camp scene). The day-to-night lighting cycle lasts about eight minutes. Canopy cutaway keeps the knight visible through foreground trees.
+
+Append `?dev=1` to show frame rate, draw calls, and triangle count. This also exposes `window.__thornwake` for inspection, deterministic state setup, and scene export. It is disabled by default.
+
+`tests/game.test.ts` tests combat costs and cooldowns, directional guard, invulnerability, equipment ownership, leveling, the chapter gates, defeat, and restart. `tools/smoke.mjs` checks the browser screens, inputs, terminal flows, console errors, and exports the scene. To run the browser checks, install the test browser with `npx playwright install chromium`, start the development server, then run `node tools/smoke.mjs`. Set `PLAYWRIGHT_CHANNEL=chrome` to use an installed Chrome browser instead. The smoke test also verifies keyboard attacks and immediate quest updates after resting. Boss and terminal-state setup in the browser smoke test is deliberate, while combat rules are tested independently.
+
+## Project structure
+
+- `src/game.ts`: fixed-step combat and progression rules.
+- `src/world.ts`: procedural geometry, animation, camera, and lighting.
+- `src/ui.ts`, `src/style.css`: HUD, inventory, and menus.
+- `src/main.ts`, `src/audio.ts`: input, render loop, and synthesized audio.
+- `tests/` and `tools/`: gameplay tests, browser checks, and the 2 MB build budget.
+- `design/`: visual direction and generated icon prompt.
+- `cinematic/`: Blender reconstruction scripts and the finished trailer.
+
+## Blender and trailer
+
+The MP4 is included in this repository. The following `.blend` files are generated locally by the scripts and are excluded from Git, along with the Blender runtime, intermediate scene export, and rendered frames. Use Blender 4.3.2 for the supplied video-sequencer API.
+
+- `cinematic/Thornwake.blend`: the complete procedural forest, camp, road, ruins, knight, and guardian, recreated from the game's actual geometry with cinematic lighting, material microdetail, mist, depth of field, and a three-shot camera timeline.
+- `cinematic/Thornwake_Trailer.mp4`: a 12-second 1920×1080 trailer assembled from three Blender-rendered shots, with slow reframing, fades, original synthesized music, title and tagline.
+- `cinematic/Trailer_Edit.blend`: the editable video sequence.
+
+Rebuild the scene export with the browser smoke script, then run:
+
+```sh
+blender --background --python cinematic/build_trailer.py -- --stills
+blender --background --python cinematic/assemble_trailer.py
+```
+
+Use `--cycles` for path-traced stills. The default is Eevee. `--resume` preserves existing rendered shots. `--animate` renders the native 288-frame 3D camera timeline instead of the still-based edit. The delivered edit deliberately uses still shots of the standing knight with animated reframing; it is not a character-animation film.
+
+The icon atlas at `public/assets/icons.webp` was generated with the built-in image tool and optimized to 194 KB. Its prompt is in `design/icon-prompt.txt`. Three.js is MIT licensed; the license is included in the build.
 
 ## License
 
-The game source is licensed under the [MIT License](LICENSE), permitting use, modification and redistribution with the copyright and license notice preserved. Three.js and Vite are separate dependencies under their respective licenses.
+The project code is available under the [MIT license](LICENSE). Three.js retains its own MIT copyright notice in `public/THIRD_PARTY_NOTICES.txt`. The icon atlas was AI-generated; no third-party model or texture packs are bundled.

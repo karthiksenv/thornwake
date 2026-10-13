@@ -1,7 +1,9 @@
 id,role,type,description,size/ratio,style line ref,source
-forest,environment,procedural geometry,Instanced trees ferns rocks ruins stream and mountains,world,1,procedural
-knight,player,procedural geometry,Articulated plate knight with thorn crown longsword and leaf shield,2 units,1,procedural
-enemies,combat,procedural geometry,Rootbound sentinels and crowned keeper,2-4 units,1,procedural
-shrines,objective,procedural geometry,Three amber light vessels and crown altar,world,1,procedural
-atmosphere,lighting,procedural shader,Mist light shafts fireflies and water,world,1,procedural
-audio,feedback,Web Audio,Synthesized wind drone sword impact and shrine chimes,n/a,1,procedural
+forest,exploration,procedural,Batched twisted trees mossy stones ferns fog and rays,62x82m,style.txt,code
+knight,player,procedural,Articulated silver plate knight with cloth cape sword shield,2m,style.txt,code
+enemies,combat,procedural,Hollow knights and antlered Wealdkeeper guardian,2-4m,style.txt,code
+rest,checkpoint,procedural,Pilgrim campfire stone circle and fire particles,6m,style.txt,code
+ruins,boss arena,procedural,Gothic broken arches columns sun altar,18m,style.txt,code
+icons,HUD and inventory,raster,Four painted bronze framed sword shield sun rune flask icons,768x768,style.txt,generate
+audio,feedback,procedural,Web Audio ambient drone fire and combat tones,small,style.txt,code
+cinematic,trailer,procedural,Blender recreation forest rest ruins knight and guardian,1920x1080,style.txt,code
